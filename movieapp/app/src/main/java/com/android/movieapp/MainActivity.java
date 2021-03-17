@@ -6,9 +6,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.android.movieapp.models.PopularResponse;
 import com.android.movieapp.network.MovieService;
+import com.android.movieapp.views.adapters.MoviePosterAdapter;
 import com.bumptech.glide.Glide;
 
 import retrofit2.Call;
@@ -29,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        ImageView imgView = (ImageView) findViewById(R.id.iv_movie);
+        //ImageView imgView = (ImageView) findViewById(R.id.iv_movie);
         Context context = this;
 
 
@@ -42,8 +47,17 @@ public class MainActivity extends AppCompatActivity {
         PopularResponse.enqueue(new Callback<com.android.movieapp.models.PopularResponse>() {
             @Override
             public void onResponse(Call<com.android.movieapp.models.PopularResponse> call, Response<com.android.movieapp.models.PopularResponse> response) {
-                Glide.with(context).load(IMG_URL + "w154" + response.body().getResults().get(5).getPosterPath()).into(imgView);
 
+
+                RecyclerView rvMovies = (RecyclerView) findViewById(R.id.rv_movies);
+                MoviePosterAdapter adapter = new MoviePosterAdapter(response.body().getResults());
+                rvMovies.setAdapter(adapter);
+
+                // First param is number of columns and second param is orientation i.e Vertical or Horizontal
+                GridLayoutManager gridLayoutManager =
+                        new GridLayoutManager(context,2);
+
+                rvMovies.setLayoutManager(gridLayoutManager);
             }
 
             @Override

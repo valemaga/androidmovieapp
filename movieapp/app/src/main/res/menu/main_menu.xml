@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_toolbar"
+    android:orderInCategory="100"
+    android:title="Menu Bar"
+    app:showAsAction="never">
+
+
+
+    <item android:id="@+id/file"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="Filter By:">
+        <!-- "file" submenu -->
+        <menu>
+            <item android:id="@+id/filter_popular_item"
+                android:title="Popularity" /> //mudar titulos para string resource
+            <item android:id="@+id/filter_rating_item"
+                android:title="Ratings" />
+        </menu>
+    </item>
+</menu>

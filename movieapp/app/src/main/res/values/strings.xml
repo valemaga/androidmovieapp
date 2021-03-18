@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string-array name="filter_array">
+        <item>Popular</item>
+        <item>Rating</item>
+    </string-array>
 </resources>

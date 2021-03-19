@@ -4,4 +4,8 @@
         <item>Popular</item>
         <item>Rating</item>
     </string-array>
+    <string name="menu_bar">Menu Bar</string>
+    <string name="filter_by">Filter By:</string>
+    <string name="popularity">Popularity</string>
+    <string name="ratings">Ratings</string>
 </resources>

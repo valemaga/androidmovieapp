@@ -24,30 +24,47 @@ import static com.android.movieapp.utils.Constants.IMG_URL;
 public class MoviePosterAdapter extends
         RecyclerView.Adapter<MoviePosterAdapter.ViewHolder>{
 
+    private List<ResultsItem> mMovies;
+    final private ListItemClickListener mOnClickListener;
+
+    public interface ListItemClickListener {
+        void onListItemClick(int position);
+
+    }
+
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public ImageView movieImageView;
-
+        ImageView movieImageView;
+        ListItemClickListener onItemListener;
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, ListItemClickListener onItemListener) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-
+            this.onItemListener = onItemListener;
             movieImageView = (ImageView) itemView.findViewById(R.id.movie_image_view);
+
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
+
         }
     }
 
 
-    private List<ResultsItem> mMovies;
-
     // Pass in the contact array into the constructor
-    public MoviePosterAdapter(List<ResultsItem> movies) {
-        mMovies = movies;
+    public MoviePosterAdapter(List<ResultsItem> movies, ListItemClickListener listener) {
+        this.mMovies = movies;
+        this.mOnClickListener = listener;
     }
 
     @NonNull
@@ -60,7 +77,7 @@ public class MoviePosterAdapter extends
         View movieView = inflater.inflate(R.layout.item_movie, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(movieView);
+        ViewHolder viewHolder = new ViewHolder(movieView, mOnClickListener);
         return viewHolder;
     }
 

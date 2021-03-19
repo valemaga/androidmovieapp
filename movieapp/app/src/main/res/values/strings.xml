@@ -1,11 +1,20 @@
 <resources>
     <string name="app_name">MovieApp</string>
+
+    <!--Filter Strings-->
     <string-array name="filter_array">
         <item>Popular</item>
         <item>Rating</item>
     </string-array>
+    <!--Details Strings-->
     <string name="menu_bar">Menu Bar</string>
     <string name="filter_by">Filter By:</string>
     <string name="popularity">Popularity</string>
     <string name="ratings">Ratings</string>
+    <string name="min">min</string>
+
+
+    <!--Errors-->
+    <string name="error_simple">Error</string>
+    <string name="error_movie_id">Error loading movie identifier</string>
 </resources>

@@ -23,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.android.movieapp.utils.Constants.IMG_URL;
+import static com.android.movieapp.utils.Constants.MOVIE_ID;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -43,9 +44,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);*/
 
         Intent passedIntent = getIntent();
-        if(passedIntent.hasExtra("movie_id")){
+        if(passedIntent.hasExtra(MOVIE_ID)){
 
-            int tempMovieId = passedIntent.getIntExtra("movie_id",0);
+            int tempMovieId = passedIntent.getIntExtra(MOVIE_ID,0);
             movieId = String.valueOf(tempMovieId);
 
             //API KEY saved in resources file values/secrets.xml
@@ -55,7 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             setMovie();
 
         } else {
-            Toast.makeText(this, "Error loading movie identifier", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.error_movie_id, Toast.LENGTH_LONG).show();
         }
 
 
@@ -81,7 +82,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 TextView yearTextView = (TextView) findViewById(R.id.year_text_view);
                 yearTextView.setText(movie.getReleaseDate());
                 TextView durationTextView = (TextView) findViewById(R.id.duration_text_view);
-                durationTextView.setText("" + movie.getRuntime() + "min");//alterar
+                durationTextView.setText("" + movie.getRuntime() + R.string.min);//alterar
                 TextView ratingTextView = (TextView) findViewById(R.id.rating_text_view);
                 ratingTextView.setText(String.valueOf(movie.getVoteAverage()) + "/10");
                 TextView descriptionTextView = (TextView) findViewById(R.id.description_text_view);
@@ -91,7 +92,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
             }
         });
     }

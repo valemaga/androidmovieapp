@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.movieapp.activities.MovieDetailActivity;
+import com.android.movieapp.models.GeneralMovieItem;
 import com.android.movieapp.models.GeneralMovieResponse;
-import com.android.movieapp.models.ResultsItem;
 import com.android.movieapp.network.MovieService;
 import com.android.movieapp.views.adapters.MoviePosterAdapter;
 
@@ -32,20 +32,21 @@ import static com.android.movieapp.utils.Constants.MOVIE_ID;
 public class MainActivity extends AppCompatActivity
         implements MoviePosterAdapter.ListItemClickListener {
 
-    private MovieService service;
-    private String API_KEY;
-    private List<ResultsItem> movies;
 
+    private String API_KEY;
+    private MovieService service;
+    private List<GeneralMovieItem> movies;
     //id identifying filter applied
     //1 stands for popular, 2 stands for ratings
     private int filterId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        API_KEY = getString(R.string.api_key);
         SwipeRefreshLayout swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         /*
          * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity
         popularResponse.enqueue(new Callback<GeneralMovieResponse>() {
             @Override
             public void onResponse(Call<GeneralMovieResponse> call, Response<GeneralMovieResponse> response) {
+
 
                 movies = response.body().getResults();
                 RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_recycler_view);

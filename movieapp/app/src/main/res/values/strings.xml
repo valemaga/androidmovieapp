@@ -11,7 +11,9 @@
     <string name="filter_by">Filter By:</string>
     <string name="popularity">Popularity</string>
     <string name="ratings">Ratings</string>
-    <string name="min">min</string>
+    <string name="minutes">min</string>
+    <string name="trailers">Trailers:</string>
+    <string name="trailer_number">Trailer </string>
 
 
     <!--Errors-->

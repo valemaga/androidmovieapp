@@ -3,7 +3,7 @@ package com.android.movieapp.models;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class ResultsItem{
+public class GeneralMovieItem {
 
 	@SerializedName("overview")
 	private String overview;

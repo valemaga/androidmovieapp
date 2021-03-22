@@ -3,7 +3,10 @@ package com.android.movieapp.models;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class GeneralMovieResponse{
+public class ReviewsResponse{
+
+	@SerializedName("id")
+	private int id;
 
 	@SerializedName("page")
 	private int page;
@@ -12,10 +15,18 @@ public class GeneralMovieResponse{
 	private int totalPages;
 
 	@SerializedName("results")
-	private List<GeneralMovieItem> results;
+	private List<ReviewsItem> results;
 
 	@SerializedName("total_results")
 	private int totalResults;
+
+	public void setId(int id){
+		this.id = id;
+	}
+
+	public int getId(){
+		return id;
+	}
 
 	public void setPage(int page){
 		this.page = page;
@@ -33,11 +44,11 @@ public class GeneralMovieResponse{
 		return totalPages;
 	}
 
-	public void setResults(List<GeneralMovieItem> results){
+	public void setResults(List<ReviewsItem> results){
 		this.results = results;
 	}
 
-	public List<GeneralMovieItem> getResults(){
+	public List<ReviewsItem> getResults(){
 		return results;
 	}
 

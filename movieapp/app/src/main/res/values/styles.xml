@@ -16,6 +16,7 @@
     <!--Right Column Movie Detail-->
     <style name="detail_right_column">
         <item name="android:foregroundGravity">center</item>
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="upper_short_text" parent="detail_right_column">
         <item name="android:layout_marginTop">44dp</item>
@@ -35,6 +36,19 @@
     </style>
     <style name="description_text" parent="overview_column">
         <item name="android:layout_marginTop">20dp</item>
+    </style>
+    <style name="trailer_text_title" parent="overview_column">
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="trailer_container">
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+    <style name="big_sub_text">
+        <item name="android:textStyle">bold</item>
     </style>
 
 

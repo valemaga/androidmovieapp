@@ -33,7 +33,7 @@
             android:id="@+id/year_text_view"
             style="@style/upper_short_text"
             android:layout_width="wrap_content"
-            android:layout_height="82dp"
+            android:layout_height="47dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/movie_detail_image_view"
@@ -50,6 +50,7 @@
 
         <TextView
             android:id="@+id/rating_text_view"
+            style="@style/bottom_short_text"
             android:layout_width="wrap_content"
             android:layout_height="47dp"
             app:layout_constraintEnd_toEndOf="@+id/duration_text_view"
@@ -67,7 +68,7 @@
 
         <TextView
             android:id="@+id/trailer_text_view"
-            style="@style/overview_column"
+            style="@style/trailer_text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/trailers"

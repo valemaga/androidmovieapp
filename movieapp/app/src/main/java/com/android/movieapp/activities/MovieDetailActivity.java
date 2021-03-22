@@ -87,7 +87,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 yearTextView.setText(movie.getReleaseDate());
                 TextView durationTextView = (TextView) findViewById(R.id.duration_text_view);
                 String minutes = getString(R.string.minutes);
-                durationTextView.setText(movie.getRuntime() + minutes);
+                durationTextView.setText(movie.getRuntime() + " " + minutes);
                 TextView ratingTextView = (TextView) findViewById(R.id.rating_text_view);
                 ratingTextView.setText(String.valueOf(movie.getVoteAverage()) + "/10");
                 TextView descriptionTextView = (TextView) findViewById(R.id.description_text_view);

@@ -37,7 +37,7 @@
     <style name="description_text" parent="overview_column">
         <item name="android:layout_marginTop">20dp</item>
     </style>
-    <style name="trailer_text_title" parent="overview_column">
+    <style name="section_text_title" parent="overview_column">
         <item name="android:layout_marginTop">30dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>

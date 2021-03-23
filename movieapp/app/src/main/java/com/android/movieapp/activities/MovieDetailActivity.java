@@ -12,16 +12,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.movieapp.MovieApplication;
 import com.android.movieapp.R;
 import com.android.movieapp.models.MovieResponse;
+import com.android.movieapp.models.ReviewsItem;
+import com.android.movieapp.models.ReviewsResponse;
 import com.android.movieapp.models.TrailerItem;
 import com.android.movieapp.models.TrailersResponse;
 import com.android.movieapp.network.MovieService;
+import com.android.movieapp.views.adapters.ReviewAdapter;
 import com.android.movieapp.views.adapters.TrailerAdapter;
 import com.bumptech.glide.Glide;
 
@@ -41,6 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     private String movieId;
     private MovieResponse movie;
     private List<TrailerItem> trailers;
+    private List<ReviewsItem> reviews;
 
 
     @Override
@@ -99,10 +102,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                     public void onResponse(Call<TrailersResponse> call, Response<TrailersResponse> response) {
 
                         trailers = response.body().getResults();
-                        RecyclerView rvTrailers = (RecyclerView) findViewById(R.id.trailer_recycler_view);
+                        RecyclerView rvTrailers = (RecyclerView) findViewById(R.id.trailers_recycler_view);
                         TrailerAdapter adapter = new TrailerAdapter(trailers, (TrailerAdapter.ListItemClickListener) context);
                         rvTrailers.setAdapter(adapter);
-                        // First param is number of columns and second param is orientation i.e Vertical or Horizontal
+
                         LinearLayoutManager linearLayoutManager =
                                 new LinearLayoutManager(context);
 
@@ -111,6 +114,27 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
                     @Override
                     public void onFailure(Call<TrailersResponse> call, Throwable t) {
+                        Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Call<ReviewsResponse> reviewResponse = service.getReviews(String.valueOf(movie.getId()), API_KEY);
+                reviewResponse.enqueue(new Callback<ReviewsResponse>() {
+                    @Override
+                    public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
+
+                        reviews = response.body().getResults();
+                        RecyclerView rvReviews = (RecyclerView) findViewById(R.id.reviews_recycler_view);
+                        ReviewAdapter adapter = new ReviewAdapter(reviews);
+                        rvReviews.setAdapter(adapter);
+                        LinearLayoutManager linearLayoutManager =
+                                new LinearLayoutManager(context);
+
+                        rvReviews.setLayoutManager(linearLayoutManager);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReviewsResponse> call, Throwable t) {
                         Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
                     }
                 });

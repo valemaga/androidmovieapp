@@ -68,7 +68,7 @@
 
         <TextView
             android:id="@+id/trailer_text_view"
-            style="@style/trailer_text_title"
+            style="@style/section_text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/trailers"
@@ -77,12 +77,30 @@
             app:layout_constraintTop_toBottomOf="@+id/description_text_view" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trailer_recycler_view"
+            android:id="@+id/trailers_recycler_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/trailer_text_view"
             app:layout_constraintStart_toStartOf="@+id/trailer_text_view"
             app:layout_constraintTop_toBottomOf="@+id/trailer_text_view" />
+
+        <TextView
+            android:id="@+id/review_text_view"
+            style="@style/section_text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/reviews"
+            app:layout_constraintEnd_toEndOf="@+id/trailers_recycler_view"
+            app:layout_constraintStart_toStartOf="@+id/trailers_recycler_view"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_recycler_view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviews_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/review_text_view"
+            app:layout_constraintStart_toStartOf="@+id/review_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/review_text_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

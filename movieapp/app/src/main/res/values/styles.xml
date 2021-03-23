@@ -52,4 +52,11 @@
     </style>
 
 
+    <style name="review_divider">
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
 </resources>

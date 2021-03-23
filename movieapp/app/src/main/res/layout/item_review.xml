@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/review_username_text_view"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,26 +19,37 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/review_username_text_view"
         app:layout_constraintStart_toStartOf="@+id/review_username_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/review_username_text_view"
-        app:layout_constraintEnd_toEndOf="@id/review_username_text_view"/>
+        app:layout_constraintTop_toBottomOf="@+id/review_username_text_view" />
 
     <ImageView
         android:id="@+id/review_avatar_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="@id/review_rating_text_view"
         app:layout_constraintStart_toStartOf="@+id/review_rating_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/review_rating_text_view"
-        app:layout_constraintEnd_toEndOf="@id/review_rating_text_view"/>
+        app:layout_constraintTop_toBottomOf="@+id/review_rating_text_view" />
 
     <TextView
         android:id="@+id/review_content_text_view"
         style="@style/big_sub_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/review_username_text_view"
-        app:layout_constraintTop_toTopOf="@+id/review_username_text_view"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@+id/review_username_text_view" />
+
+    <View
+        android:id="@+id/review_divider"
+        style="@style/review_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="@+id/review_content_text_view"
+        app:layout_constraintStart_toStartOf="@+id/review_username_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/review_content_text_view" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

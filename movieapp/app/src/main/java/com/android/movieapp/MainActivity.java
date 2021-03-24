@@ -11,9 +11,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.movieapp.activities.MovieDetailActivity;
+import com.android.movieapp.dao.FavoriteDao;
+import com.android.movieapp.data.AppDatabase;
+import com.android.movieapp.models.Favorite;
 import com.android.movieapp.models.GeneralMovieItem;
 import com.android.movieapp.models.GeneralMovieResponse;
 import com.android.movieapp.network.MovieService;
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         API_KEY = getString(R.string.api_key);
         SwipeRefreshLayout swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
@@ -92,7 +98,10 @@ public class MainActivity extends AppCompatActivity
         if (filterId == 2) {
             updateToRating();
         }
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

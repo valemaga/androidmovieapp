@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.movieapp.MovieApplication;
 import com.android.movieapp.R;
+import com.android.movieapp.data.AppDatabase;
+import com.android.movieapp.models.Favorite;
 import com.android.movieapp.models.MovieResponse;
 import com.android.movieapp.models.ReviewsItem;
 import com.android.movieapp.models.ReviewsResponse;
@@ -44,6 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     private MovieResponse movie;
     private List<TrailerItem> trailers;
     private List<ReviewsItem> reviews;
+    private AppDatabase mDb;
 
 
     @Override
@@ -66,7 +70,73 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         } else {
             Toast.makeText(this, R.string.error_movie_id, Toast.LENGTH_LONG).show();
         }
+    }
 
+    private void setupFavorite() {
+        //check favorite
+        mDb = AppDatabase.getInstance(this);
+        Favorite favorite = mDb.favoriteDao().getFavorite(movie.getId());
+
+        if (favorite != null) {
+            ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
+
+            favoriteStar.setImageResource(R.drawable.ic_baseline_star_35);
+            //add on click listener to unfavorite
+            favoriteStar.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    deleteFavorite();
+                }
+            });
+
+        } else {
+            //default no favorite
+            ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
+
+            favoriteStar.setImageResource(R.drawable.ic_baseline_star_outline_35);
+            //add on click listener to favorite
+            favoriteStar.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //add to favorites
+                    addFavorite();
+                }
+            });
+
+        }
+    }
+
+    private void addFavorite() {
+        mDb = AppDatabase.getInstance(this);
+        Favorite favorite = new Favorite(movie.getId(), movie.getPosterPath());
+        mDb.favoriteDao().insert(favorite);
+        //change to filled star
+        ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
+
+        favoriteStar.setImageResource(R.drawable.ic_baseline_star_35);
+        //add on click listener to unfavorite
+        favoriteStar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                deleteFavorite();
+            }
+        });
+
+    }
+
+    private void deleteFavorite() {
+        mDb = AppDatabase.getInstance(this);
+        Favorite favorite = new Favorite(movie.getId(), movie.getPosterPath());
+        mDb.favoriteDao().delete(favorite);
+
+        //change to hollow star
+        ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
+
+        favoriteStar.setImageResource(R.drawable.ic_baseline_star_outline_35);
+        //add on click listener to favorite
+        favoriteStar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //add to favorites
+                addFavorite();
+            }
+        });
 
     }
 
@@ -138,7 +208,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                         Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
                     }
                 });
-
+                //setup favorite state based on the movie
+                setupFavorite();
             }
 
             @Override
@@ -146,9 +217,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
 
 
     }

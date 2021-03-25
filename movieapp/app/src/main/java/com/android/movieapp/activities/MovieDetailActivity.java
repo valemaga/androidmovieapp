@@ -16,10 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.movieapp.AppExecutors;
 import com.android.movieapp.MovieApplication;
 import com.android.movieapp.R;
 import com.android.movieapp.data.AppDatabase;
-import com.android.movieapp.models.Favorite;
+import com.android.movieapp.models.MoviePoster;
 import com.android.movieapp.models.MovieResponse;
 import com.android.movieapp.models.ReviewsItem;
 import com.android.movieapp.models.ReviewsResponse;
@@ -54,6 +55,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        mDb = AppDatabase.getInstance(this);
+
         API_KEY = getString(R.string.api_key);
 
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -70,44 +74,70 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         } else {
             Toast.makeText(this, R.string.error_movie_id, Toast.LENGTH_LONG).show();
         }
+
+
     }
 
     private void setupFavorite() {
         //check favorite
-        mDb = AppDatabase.getInstance(this);
-        Favorite favorite = mDb.favoriteDao().getFavorite(movie.getId());
+        //mDb = AppDatabase.getInstance(this);
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
 
-        if (favorite != null) {
-            ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
+                final MoviePoster moviePoster = mDb.favoriteDao().getFavorite(movie.getId());
+                runOnUiThread(new Runnable() {
 
-            favoriteStar.setImageResource(R.drawable.ic_baseline_star_35);
-            //add on click listener to unfavorite
-            favoriteStar.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    deleteFavorite();
-                }
-            });
-
-        } else {
-            //default no favorite
-            ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
-
-            favoriteStar.setImageResource(R.drawable.ic_baseline_star_outline_35);
-            //add on click listener to favorite
-            favoriteStar.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    //add to favorites
-                    addFavorite();
-                }
-            });
-
-        }
+                    @Override
+                    public void run() {
+                        if (moviePoster != null) {
+                            fillFavoriteStar();
+                        } else {
+                            //default no favorite
+                            emptyFavoriteStar();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void addFavorite() {
-        mDb = AppDatabase.getInstance(this);
-        Favorite favorite = new Favorite(movie.getId(), movie.getPosterPath());
-        mDb.favoriteDao().insert(favorite);
+        //mDb = AppDatabase.getInstance(this);
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                MoviePoster moviePoster = new MoviePoster(movie.getId(), movie.getPosterPath());
+                mDb.favoriteDao().insert(moviePoster);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fillFavoriteStar();
+                    }
+                });
+            }
+        });
+    }
+
+    private void deleteFavorite() {
+        //mDb = AppDatabase.getInstance(this);
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                MoviePoster moviePoster = new MoviePoster(movie.getId(), movie.getPosterPath());
+                mDb.favoriteDao().delete(moviePoster);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        emptyFavoriteStar();
+                    }
+                });
+            }
+        });
+    }
+
+    private void fillFavoriteStar() {
         //change to filled star
         ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
 
@@ -118,14 +148,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 deleteFavorite();
             }
         });
-
     }
 
-    private void deleteFavorite() {
-        mDb = AppDatabase.getInstance(this);
-        Favorite favorite = new Favorite(movie.getId(), movie.getPosterPath());
-        mDb.favoriteDao().delete(favorite);
-
+    private void emptyFavoriteStar() {
         //change to hollow star
         ImageView favoriteStar = (ImageView) findViewById(R.id.favorite_star_image_view);
 
@@ -139,7 +164,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         });
 
     }
-
 
     private void setMovie() {
         Context context = this;
@@ -245,4 +269,5 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
             this.startActivity(webIntent);
         }
     }
+
 }

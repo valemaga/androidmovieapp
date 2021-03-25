@@ -17,6 +17,8 @@
                 android:title="@string/popularity" />
             <item android:id="@+id/filter_rating_item"
                 android:title="@string/ratings" />
+            <item android:id="@+id/filter_favorite_item"
+                android:title="@string/favorites" />
         </menu>
     </item>
 </menu>

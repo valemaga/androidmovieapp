@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.movieapp.R;
 import com.android.movieapp.models.GeneralMovieItem;
+import com.android.movieapp.models.MoviePoster;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -22,8 +23,9 @@ import static com.android.movieapp.utils.Constants.IMG_URL;
 public class MoviePosterAdapter extends
         RecyclerView.Adapter<MoviePosterAdapter.ViewHolder>{
 
-    private List<GeneralMovieItem> mMovies;
+    private List<MoviePoster> mMovies;
     final private ListItemClickListener mOnClickListener;
+    private Context context;
 
     public interface ListItemClickListener {
         void onListItemClick(int position);
@@ -60,9 +62,14 @@ public class MoviePosterAdapter extends
 
 
     // Pass in the contact array into the constructor
-    public MoviePosterAdapter(List<GeneralMovieItem> movies, ListItemClickListener listener) {
-        this.mMovies = movies;
+    public MoviePosterAdapter(Context context, ListItemClickListener listener) {
+        this.context = context;
         this.mOnClickListener = listener;
+    }
+
+    public void setmMovies(List<MoviePoster> movies){
+        this.mMovies = movies;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -82,7 +89,7 @@ public class MoviePosterAdapter extends
     @Override
     public void onBindViewHolder(@NonNull MoviePosterAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
-        GeneralMovieItem movie = mMovies.get(position);
+        MoviePoster movie = mMovies.get(position);
 
         // Set item views based on your views and data model
         ImageView imageView = holder.movieImageView;
@@ -92,6 +99,9 @@ public class MoviePosterAdapter extends
 
     @Override
     public int getItemCount() {
+        if(mMovies == null){
+            return 0;
+        }
         return mMovies.size();
     }
 }

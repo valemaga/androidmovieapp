@@ -2,25 +2,27 @@ package com.android.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.movieapp.activities.MovieDetailActivity;
-import com.android.movieapp.dao.FavoriteDao;
 import com.android.movieapp.data.AppDatabase;
-import com.android.movieapp.models.Favorite;
-import com.android.movieapp.models.GeneralMovieItem;
+import com.android.movieapp.models.MoviePoster;
 import com.android.movieapp.models.GeneralMovieResponse;
 import com.android.movieapp.network.MovieService;
+import com.android.movieapp.network.NetworkMapper;
 import com.android.movieapp.views.adapters.MoviePosterAdapter;
 
 import java.util.List;
@@ -36,13 +38,18 @@ import static com.android.movieapp.utils.Constants.MOVIE_ID;
 public class MainActivity extends AppCompatActivity
         implements MoviePosterAdapter.ListItemClickListener {
 
-
+    //private Context context;
     private String API_KEY;
     private MovieService service;
-    private List<GeneralMovieItem> movies;
+    private List<MoviePoster> movies;
     //id identifying filter applied
     //1 stands for popular, 2 stands for ratings
     private int filterId;
+
+    private AppDatabase mDb;
+
+    private RecyclerView rvMovies;
+    private MoviePosterAdapter movieAdapter;
 
 
     @Override
@@ -50,9 +57,19 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDb = AppDatabase.getInstance(this);
 
 
         API_KEY = getString(R.string.api_key);
+
+        rvMovies = (RecyclerView) findViewById(R.id.movies_recycler_view);
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(this, 2);
+        rvMovies.setLayoutManager(gridLayoutManager);
+        movieAdapter = new MoviePosterAdapter(this, (MoviePosterAdapter.ListItemClickListener) this);
+        rvMovies.setAdapter(movieAdapter);
+
+
         SwipeRefreshLayout swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         /*
          * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
@@ -76,6 +93,13 @@ public class MainActivity extends AppCompatActivity
                             }
                             return;
                         }
+                        if (filterId == 3) {
+                            updateToFavorite();
+                            if (swipeLayout.isRefreshing()) {
+                                swipeLayout.setRefreshing(false);
+                            }
+                            return;
+                        }
                     }
                 }
         );
@@ -88,6 +112,9 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.getInt(FILTER_APPLIED) == 2) {
                 filterId = 2;
             }
+            if (savedInstanceState.getInt(FILTER_APPLIED) == 3) {
+                filterId = 3;
+            }
         } else {
             //default filter is set to 1 (popular)
             filterId = 1;
@@ -97,6 +124,9 @@ public class MainActivity extends AppCompatActivity
         }
         if (filterId == 2) {
             updateToRating();
+        }
+        if (filterId == 3) {
+            updateToFavorite();
         }
 
 
@@ -123,6 +153,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.filter_rating_item:
                 updateToRating();
                 return true;
+            case R.id.filter_favorite_item:
+                updateToFavorite();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -131,25 +164,19 @@ public class MainActivity extends AppCompatActivity
 
     private void updateToPopular() {
         filterId = 1;
-        Context context = this;
 
+        Context context = this;
         service = ((MovieApplication) getApplication()).getService();
 
         Call<GeneralMovieResponse> popularResponse = service.getPopular(API_KEY);
         popularResponse.enqueue(new Callback<GeneralMovieResponse>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<GeneralMovieResponse> call, Response<GeneralMovieResponse> response) {
+                NetworkMapper mapper = new NetworkMapper();
+                movies = mapper.mapFromEntityList(response.body().getResults());
+                movieAdapter.setmMovies(movies);
 
-
-                movies = response.body().getResults();
-                RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_recycler_view);
-                MoviePosterAdapter adapter = new MoviePosterAdapter(movies, (MoviePosterAdapter.ListItemClickListener) context);
-                rvMovies.setAdapter(adapter);
-                // First param is number of columns and second param is orientation i.e Vertical or Horizontal
-                GridLayoutManager gridLayoutManager =
-                        new GridLayoutManager(context, 2);
-
-                rvMovies.setLayoutManager(gridLayoutManager);
             }
 
             @Override
@@ -164,29 +191,33 @@ public class MainActivity extends AppCompatActivity
     private void updateToRating() {
         filterId = 2;
         Context context = this;
-
         service = ((MovieApplication) getApplication()).getService();
 
         Call<GeneralMovieResponse> ratedResponse = service.getRated(API_KEY);
         ratedResponse.enqueue(new Callback<GeneralMovieResponse>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<GeneralMovieResponse> call, Response<GeneralMovieResponse> response) {
-
-                movies = response.body().getResults();
-                RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_recycler_view);
-                MoviePosterAdapter adapter = new MoviePosterAdapter(movies, (MoviePosterAdapter.ListItemClickListener) context);
-                rvMovies.setAdapter(adapter);
-
-                // First param is number of columns and second param is orientation i.e Vertical or Horizontal
-                GridLayoutManager gridLayoutManager =
-                        new GridLayoutManager(context, 2);
-
-                rvMovies.setLayoutManager(gridLayoutManager);
+                NetworkMapper mapper = new NetworkMapper();
+                movies = mapper.mapFromEntityList(response.body().getResults());
+                movieAdapter.setmMovies(movies);
             }
-
             @Override
             public void onFailure(Call<GeneralMovieResponse> call, Throwable t) {
                 Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateToFavorite() {
+        filterId = 3;
+        Context context = this;
+        final LiveData<List<MoviePoster>> moviesPoster = mDb.favoriteDao().getAll();
+        moviesPoster.observe(this, new Observer<List<MoviePoster>>() {
+            @Override
+            public void onChanged(List<MoviePoster> moviePosters) {
+                movies = moviePosters;
+                movieAdapter.setmMovies(movies);
             }
         });
     }
@@ -203,7 +234,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(FILTER_APPLIED, filterId);
-
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }

@@ -1,11 +1,17 @@
 package com.android.movieapp;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class AppExecutors {
 
     private static final Object LOCK = new Object();
-    private static AppExecutors sIntance;
+    private static AppExecutors sInstance;
     private final Executor diskIO;
     private final Executor mainThread;
     private final Executor networkIO;
@@ -16,5 +22,39 @@ public class AppExecutors {
         this.networkIO = networkIO;
     }
 
+    public static AppExecutors getInstance() {
+
+        if (sInstance == null) {
+            synchronized (LOCK) {
+                sInstance = new AppExecutors(Executors.newSingleThreadExecutor(),
+                        Executors.newFixedThreadPool(3),
+                        new MainThreadExecutor());
+            }
+
+        }
+        return sInstance;
+    }
+
+    public Executor getDiskIO() {
+        return diskIO;
+    }
+
+    public Executor getMainThread() {
+        return mainThread;
+    }
+
+    public Executor getNetworkIO() {
+        return networkIO;
+    }
+
+    private static class MainThreadExecutor implements Executor {
+
+        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
+        @Override
+        public void execute(@NonNull Runnable command) {
+            mainThreadHandler.post(command);
+        }
+    }
 
 }

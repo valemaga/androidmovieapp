@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Favorite {
+public class MoviePoster {
 
     @PrimaryKey
     public int id;
@@ -13,7 +13,7 @@ public class Favorite {
     @ColumnInfo
     public String posterPath;
 
-    public Favorite(int id, String posterPath) {
+    public MoviePoster(int id, String posterPath) {
         this.id = id;
         this.posterPath = posterPath;
     }

@@ -1,5 +1,6 @@
 package com.android.movieapp.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -7,7 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.android.movieapp.models.Favorite;
+import com.android.movieapp.models.MoviePoster;
 
 import java.util.List;
 
@@ -15,20 +16,20 @@ import java.util.List;
 @Dao
 public interface FavoriteDao {
 
-    @Query("SELECT * FROM Favorite")
-    List<Favorite> getAll();
+    @Query("SELECT * FROM MoviePoster")
+    LiveData<List<MoviePoster>> getAll();
 
 
-    @Query("SELECT * FROM Favorite WHERE id = :movieId")
-    Favorite getFavorite(int movieId);
+    @Query("SELECT * FROM MoviePoster WHERE id = :movieId")
+    MoviePoster getFavorite(int movieId);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateFavorite(Favorite favorite);
+    void updateFavorite(MoviePoster moviePoster);
 
     @Insert
-    void insert(Favorite favorite);
+    void insert(MoviePoster moviePoster);
 
     @Delete
-    void delete(Favorite favorite);
+    void delete(MoviePoster moviePoster);
 }
 

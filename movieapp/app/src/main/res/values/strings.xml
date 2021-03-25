@@ -5,12 +5,15 @@
     <string-array name="filter_array">
         <item>Popular</item>
         <item>Rating</item>
+        <item>Favorite</item>
     </string-array>
-    <!--Details Strings-->
     <string name="menu_bar">Menu Bar</string>
     <string name="filter_by">Filter By:</string>
     <string name="popularity">Popularity</string>
     <string name="ratings">Ratings</string>
+    <string name="favorites">Favorites</string>
+
+    <!--Details Strings-->
     <string name="minutes">min</string>
     <string name="trailers">Trailers</string>
     <string name="trailer_number">Trailer </string>

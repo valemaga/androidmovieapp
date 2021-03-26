@@ -23,4 +23,5 @@
     <!--Errors-->
     <string name="error_simple">Error</string>
     <string name="error_movie_id">Error loading movie identifier</string>
+    <string name="check_connection_error">No Connection. Please check your connection or try again later.</string>
 </resources>

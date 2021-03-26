@@ -7,11 +7,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movies_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/movies_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="@+id/main_constraint_layout"
+            app:layout_constraintEnd_toEndOf="@+id/main_constraint_layout"
+            app:layout_constraintStart_toStartOf="@+id/main_constraint_layout"
+            app:layout_constraintTop_toTopOf="@+id/main_constraint_layout"/>
+
+        <ProgressBar
+            android:id="@+id/main_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/main_constraint_layout"
+            app:layout_constraintEnd_toEndOf="@+id/main_constraint_layout"
+            app:layout_constraintStart_toStartOf="@+id/main_constraint_layout"
+            app:layout_constraintTop_toTopOf="@+id/main_constraint_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

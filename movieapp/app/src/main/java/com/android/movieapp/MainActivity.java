@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -19,8 +21,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.movieapp.activities.MovieDetailActivity;
 import com.android.movieapp.data.AppDatabase;
-import com.android.movieapp.models.MoviePoster;
 import com.android.movieapp.models.GeneralMovieResponse;
+import com.android.movieapp.models.MoviePoster;
 import com.android.movieapp.network.MovieService;
 import com.android.movieapp.network.NetworkMapper;
 import com.android.movieapp.views.adapters.MoviePosterAdapter;
@@ -51,16 +53,22 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView rvMovies;
     private MoviePosterAdapter movieAdapter;
 
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Get instance of database
         mDb = AppDatabase.getInstance(this);
 
-
+        //Get API KEY saved in a xml file not included in this project; A personal API KEY from themoviedb.org is needed
         API_KEY = getString(R.string.api_key);
+
+        //setting progress bar
+        progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
 
         rvMovies = (RecyclerView) findViewById(R.id.movies_recycler_view);
         GridLayoutManager gridLayoutManager =
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity
 
     private void updateToPopular() {
         filterId = 1;
-
+        progressBar.setVisibility(View.VISIBLE);
         Context context = this;
         service = ((MovieApplication) getApplication()).getService();
 
@@ -173,15 +181,23 @@ public class MainActivity extends AppCompatActivity
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<GeneralMovieResponse> call, Response<GeneralMovieResponse> response) {
-                NetworkMapper mapper = new NetworkMapper();
-                movies = mapper.mapFromEntityList(response.body().getResults());
-                movieAdapter.setmMovies(movies);
+                if(response.isSuccessful()) {
+                    NetworkMapper mapper = new NetworkMapper();
+                    movies = mapper.mapFromEntityList(response.body().getResults());
+                    movieAdapter.setmMovies(movies);
+                    progressBar.setVisibility(View.INVISIBLE);
+                } else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    //error
+                    Toast.makeText(context, R.string.check_connection_error, Toast.LENGTH_SHORT).show();
 
+                }
             }
 
             @Override
             public void onFailure(Call<GeneralMovieResponse> call, Throwable t) {
-                Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(context, R.string.check_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -190,6 +206,7 @@ public class MainActivity extends AppCompatActivity
 
     private void updateToRating() {
         filterId = 2;
+        progressBar.setVisibility(View.VISIBLE);
         Context context = this;
         service = ((MovieApplication) getApplication()).getService();
 
@@ -198,26 +215,40 @@ public class MainActivity extends AppCompatActivity
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<GeneralMovieResponse> call, Response<GeneralMovieResponse> response) {
-                NetworkMapper mapper = new NetworkMapper();
-                movies = mapper.mapFromEntityList(response.body().getResults());
-                movieAdapter.setmMovies(movies);
+                if(response.isSuccessful()){
+                    NetworkMapper mapper = new NetworkMapper();
+                    movies = mapper.mapFromEntityList(response.body().getResults());
+                    movieAdapter.setmMovies(movies);
+                    progressBar.setVisibility(View.INVISIBLE);
+                } else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    //error
+                    Toast.makeText(context, R.string.check_connection_error, Toast.LENGTH_SHORT).show();
+                }
+
             }
+
             @Override
             public void onFailure(Call<GeneralMovieResponse> call, Throwable t) {
-                Toast.makeText(context, R.string.error_simple, Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(context, R.string.check_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateToFavorite() {
         filterId = 3;
+        progressBar.setVisibility(View.VISIBLE);
         Context context = this;
         final LiveData<List<MoviePoster>> moviesPoster = mDb.favoriteDao().getAll();
         moviesPoster.observe(this, new Observer<List<MoviePoster>>() {
             @Override
             public void onChanged(List<MoviePoster> moviePosters) {
+
                 movies = moviePosters;
                 movieAdapter.setmMovies(movies);
+                progressBar.setVisibility(View.INVISIBLE);
+
             }
         });
     }
